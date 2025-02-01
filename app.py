@@ -2,8 +2,7 @@ import re
 import mysql.connector
 import dash
 import dash_cytoscape as cyto
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import dcc, html
 from dash.dependencies import Input, Output, State, ALL
 import dash.exceptions
 
@@ -128,7 +127,7 @@ def create_app():
     app.layout = html.Div(style={'display': 'flex', 'height': '100vh'}, children=[
         # 左側サイドバー（幅20%程度）
         html.Div(id='left-sidebar', style={
-            'width': '20%', 'borderRight': '1px solid #ccc', 'padding': '10px', 'overflowY': 'auto'
+            'width': '20%', 'maxWidth': '300px', 'borderRight': '1px solid #ccc', 'padding': '10px', 'overflowY': 'auto'
         }, children=[
             html.H3("Tables"),
             dcc.Input(
@@ -228,7 +227,7 @@ def create_app():
                     tname,
                     id={'type': 'table-item', 'index': tname},
                     n_clicks=0,
-                    style={'width': '100%', 'textAlign': 'left', 'marginBottom': '5px'}
+                    style={'width': '100%', 'textAlign': 'left', 'marginBottom': '5px', 'overflowWrap': 'break-word'}
                 )
             )
         return elements, table_buttons
@@ -328,4 +327,5 @@ def create_app():
 # =======================================
 if __name__ == '__main__':
     app = create_app()
-    app.run_server(debug=False, port=8000)
+    # app.run_server(debug=False, port=8888)
+    app.run_server(debug=True, port=8887)
