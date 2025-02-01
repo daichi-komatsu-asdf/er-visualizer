@@ -1,0 +1,16 @@
+version: '2'  
+
+services:  
+  mysql:  
+    image: mysql:5.6
+    container_name: ec-mysql  
+    environment:  
+      MYSQL_ROOT_PASSWORD: rootpass  
+      MYSQL_DATABASE: ec_db  
+      MYSQL_USER: ec_user  
+      MYSQL_PASSWORD: ec_pass  
+    ports:  
+      - "3306:3306"  
+    volumes:
+      - ./init-sql:/docker-entrypoint-initdb.d:Z
+
