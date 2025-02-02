@@ -17,6 +17,14 @@ DB_CONFIG = {
 }
 
 # =======================================
+# カラーパレット
+# =======================================
+PRIMARY_COLOR = "#FF4B3C"
+SECONDARY_COLOR = "#FAA500"
+ACCENT_COLOR = "#3282C8"
+
+
+# =======================================
 # スキーマ情報取得と依存関係抽出の関数群
 # =======================================
 def fetch_schema_data(db_config):
@@ -100,10 +108,15 @@ def create_app():
 
     base_stylesheet = [
         {'selector': 'node', 'style': {'label': 'data(label)', 'background-color': '#CCCCCC'}},
-        {'selector': 'edge', 'style': {'line-color': '#DDDDDD'}}
+        {'selector': 'edge', 'style': {'line-color': '#CCCCCC', 'line-opacity': '0.8'}}
     ]
 
-    app.layout = html.Div(style={'display': 'flex', 'height': '100vh'}, children=[
+    app.layout = html.Div(style={'display': 'flex', 'height': '100vh', 'fontFamily': '"Noto Sans", sans-serif'}, children=[
+    	# とりあえずwebフォント
+    	html.Link(
+        	href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap",
+        	rel="stylesheet"
+    	),
         # 左サイドバー：テーブルフィルター＆一覧
         html.Div(id='left-sidebar', style={
             'width': '20%', 'maxWidth': '300px', 'borderRight': '1px solid #ccc',
@@ -126,7 +139,7 @@ def create_app():
             cyto.Cytoscape(
                 id='cytoscape',
                 elements=generate_elements(tables, dependencies),
-                layout={'name': 'cose'},
+                layout={'name': 'concentric'},
                 stylesheet=base_stylesheet,
                 style={'flex': '1', 'width': '100%'}
             ),
@@ -136,12 +149,13 @@ def create_app():
                 dcc.Dropdown(
                     id='layout-dropdown',
                     options=[
+                        {'label': 'Concentric', 'value': 'concentric'},
+                        {'label': 'Circle', 'value': 'circle'},
                         {'label': 'COSE', 'value': 'cose'},
                         {'label': 'Breadthfirst', 'value': 'breadthfirst'},
-                        {'label': 'Circle', 'value': 'circle'},
                         {'label': 'Grid', 'value': 'grid'},
                     ],
-                    value='cose',
+                    value='concentric',
                     clearable=False,
                     style={'width': '200px', 'display': 'inline-block'}
                 )
@@ -183,7 +197,7 @@ def create_app():
             style = {'width': '100%', 'textAlign': 'left',
                      'marginBottom': '5px', 'overflowWrap': 'break-word'}
             if tname == selected_value:
-                style.update({'background-color': '#F39C12', 'color': 'white'})
+                style.update({'background-color': PRIMARY_COLOR, 'color': 'white'})
             table_buttons.append(
                 html.Button(
                     tname,
@@ -245,12 +259,12 @@ def create_app():
             elif tgt == selected:
                 neighbors.add(src)
         highlight = [
-            {'selector': f'node[id="{selected}"]', 'style': {'background-color': '#F39C12'}},
-            {'selector': f'edge[source="{selected}"], edge[target="{selected}"]', 'style': {'line-color': '#F39C12'}}
+            {'selector': f'node[id="{selected}"]', 'style': {'background-color': PRIMARY_COLOR}},
+            {'selector': f'edge[source="{selected}"], edge[target="{selected}"]', 'style': {'line-color': PRIMARY_COLOR, 'line-opacity': '0.8'}}
         ]
         if neighbors:
             neighbor_selector = ", ".join([f'node[id="{n}"]' for n in neighbors])
-            highlight.append({'selector': neighbor_selector, 'style': {'background-color': '#F7DC6F'}})
+            highlight.append({'selector': neighbor_selector, 'style': {'background-color': SECONDARY_COLOR}})
         return base + highlight
 
     # ④ Store の値に応じて右サイドバーに詳細を表示
